@@ -1,12 +1,20 @@
+#include <string.h>
 #include "bufor.h"
 
-int my_write(int file, char *buf){
+static char circ_buf[512];
+int i;
 
-    return write(file, buf, strlen(buf)+1);
+int my_write(char *tekst, size_t length){
+	for(int i = 0; i < length; i++ ){
+      circ_buf[i] = tekst[i];
+      }
+	return i;
 }
 
-int my_read(int file, char *buf){
-
-    return read(file, buf, strlen(buf)+1);
+int my_read(char *tekst, size_t length){
+	for(int i = 0; i < length; i++ ){
+      tekst[i] = circ_buf[i];
+      }
+	return i;
 }
 

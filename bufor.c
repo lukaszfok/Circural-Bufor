@@ -1,24 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 #include "bufor.h"
-#define Size_buf 20
 
 int main()
-{   int fd;
-    int i;
-    char buf[Size_buf];
-    while(scanf("%s",buf)){
-    if(strlen(buf) > 20){
+{  		
+ 	char tekst[512];
+    while(scanf("%s",tekst)){
+    
+    if(strlen(tekst) == 512){
         exit(-1);
-
     }else{
-        my_write(fd,buf);
+        my_write(tekst,strlen(tekst));
     }
+    my_read(tekst,strlen(tekst));
+	printf("%s\n",tekst);
 }
-    my_read(fd,buf);
-
-    printf("%s",buf);
-
     return 0;
 }
