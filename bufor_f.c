@@ -2,19 +2,23 @@
 #include "bufor.h"
 
 static char circ_buf[512];
-int i;
+static int bufor_state;
 
 int my_write(char *tekst, size_t length){
-	for(int i = 0; i < length; i++ ){
+	int i;
+	for(i = 0; i < length; i++ ){
       circ_buf[i] = tekst[i];
       }
+      bufor_state+=i;
 	return i;
 }
 
 int my_read(char *tekst, size_t length){
-	for(int i = 0; i < length; i++ ){
-      tekst[i] = circ_buf[i];
+	int i;
+	for(i = 0; i < length; i++ ){
+      tekst[i] = circ_buf[i]; 
       }
+      bufor_state-=i;
 	return i;
 }
-
+_media_work_122016
