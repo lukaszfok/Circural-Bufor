@@ -9,7 +9,7 @@ int main()
 	int state;
 
 	my_write("down",4);
-	my_write("load",4);
+	my_write("load",5);
 
 	my_read(tekst,3);
 	printf("%s\n", tekst);

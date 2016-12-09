@@ -3,7 +3,7 @@
 #include <string.h>
 #include "bufor.h"
 
-/*int main()
+int main()
 {  		
  	char tekst[512];
     while(scanf("%s",tekst)){
@@ -13,8 +13,9 @@
     }else{
         my_write(tekst,strlen(tekst));
     }
+    
     my_read(tekst,strlen(tekst));
 	printf("%s %d\n", tekst);
 }
     return 0;
-}*/
+}
