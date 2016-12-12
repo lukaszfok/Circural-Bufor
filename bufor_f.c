@@ -16,8 +16,8 @@ int my_write(char *tekst, size_t length){
 
 int my_read(char *tekst, size_t length){
 	int i;
-	for(i = end_bufor_state; i < bufor_state; i++){
-      tekst[i] = circ_buf[i]; 
+	for(i = end_bufor_state;i < length; i++){
+      tekst[i-end_bufor_state] = circ_buf[i]; 
       }
     end_bufor_state+=i;
 	return i;
