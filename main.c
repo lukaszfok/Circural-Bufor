@@ -11,10 +11,7 @@ int main()
 	my_write("load",4);
 	my_write("pullup",6);
 	my_write("trololo",8);
-<<<<<<< HEAD
 
-=======
->>>>>>> 12a7300c2d261ddeed51986eb3472161323c9648
 	state = my_read(tekst,3);
 	for(int i=0; i<state; i++){
 		printf("%c", tekst[i]);
@@ -25,10 +22,6 @@ int main()
 		printf("%c", tekst[i]);
 		}
 	printf("\n");
-<<<<<<< HEAD
-=======
-	
->>>>>>> 12a7300c2d261ddeed51986eb3472161323c9648
 
 	my_read(tekst,sizeof(tekst));
 	printf("%s\n", tekst);
