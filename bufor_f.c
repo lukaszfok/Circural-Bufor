@@ -1,7 +1,9 @@
 #include <string.h>
 #include "bufor.h"
 
-static char circ_buf[30];
+#define MAX_SIZE 30
+
+static char circ_buf[MAX_SIZE];
 static int recent_buffer_write;
 static int recent_buffer_read;
 
@@ -30,8 +32,26 @@ int my_read(char *tekst, size_t length){
       
 	if(recent_buffer_read >sizeof(circ_buf)){
 			recent_buffer_read=0;
-
 		}	
 }
 	return i;
 }
+
+int buffer_count(char *tekst , size_t lenght){
+
+	if(recent_buffer_read<recent_buffer_write){
+
+		return recent_buffer_write-recent_buffer_read;
+
+	}else if(recent_buffer_read>recent_buffer_write){
+
+		return sizeof(circ_buf)-recent_buffer_read+recent_buffer_write;
+
+	}
+}
+
+void buffer_clear(void){
+	
+	recent_buffer_write=recent_buffer_read=0;
+}
+
