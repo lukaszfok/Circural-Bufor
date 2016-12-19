@@ -5,26 +5,11 @@
 
 int main()
 {  		
-	char tekst[512];
-	int state;
-	my_write("down",4);
-	my_write("load",4);
-	my_write("pullup",6);
-	my_write("trololo",8);
-	state = my_read(tekst,3);
-	for(int i=0; i<state; i++){
-		printf("%c", tekst[i]);
-		}
-	printf("\n");
-	state = my_read(tekst,7);
-	for(int i=0; i<state; i++){
-		printf("%c", tekst[i]);
-		}
-	printf("\n");
-	
-
-	my_read(tekst,sizeof(tekst));
-	printf("%s\n", tekst);
+	one_read_one_write();
+	buffer_clear();
+	few_write_one_read();
+	buffer_clear();	
+	few_write_few_read();
 
     return 0;
 }

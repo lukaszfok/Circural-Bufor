@@ -1,24 +1,57 @@
 #include <string.h>
 #include "bufor.h"
 
-static char circ_buf[512];
-static int bufor_state;
-static int end_bufor_state;
+#define MAX_SIZE 30
+
+static char circ_buf[MAX_SIZE];
+static int recent_buffer_write;
+static int recent_buffer_read;
 
 int my_write(char *tekst, size_t length){
 	int i;
 	for(i = 0; i < length; i++ ){
-      circ_buf[i+bufor_state] = tekst[i];
-      }
-    bufor_state+=i;
+		if(recent_buffer_write > sizeof(circ_buf)){
+	  		recent_buffer_write=0;
+		}
+		if(recent_buffer_write+1 == recent_buffer_read){
+			recent_buffer_read++;
+		}
+		if(recent_buffer_read>sizeof(circ_buf)){
+			recent_buffer_read=0;
+		}
+    	circ_buf[recent_buffer_write++] = tekst[i];
+    } 
+	recent_buffer_write=recent_buffer_write % sizeof(circ_buf);
 	return i;
 }
 
 int my_read(char *tekst, size_t length){
 	int i;
-	for(i = end_bufor_state;i < length; i++){
-      tekst[i-end_bufor_state] = circ_buf[i]; 
-      }
-    end_bufor_state+=i;
+	for(i = 0; i < length && recent_buffer_read<recent_buffer_write; i++){
+      tekst[i] = circ_buf[recent_buffer_read++]; 
+      
+	if(recent_buffer_read >sizeof(circ_buf)){
+			recent_buffer_read=0;
+		}	
+}
 	return i;
 }
+
+int buffer_count(char *tekst , size_t lenght){
+
+	if(recent_buffer_read<recent_buffer_write){
+
+		return recent_buffer_write-recent_buffer_read;
+
+	}else if(recent_buffer_read>recent_buffer_write){
+
+		return sizeof(circ_buf)-recent_buffer_read+recent_buffer_write;
+
+	}
+}
+
+void buffer_clear(){
+	
+	recent_buffer_write=recent_buffer_read=0;
+}
+
