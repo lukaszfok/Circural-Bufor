@@ -4,13 +4,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-int my_write(char *tekst, size_t length);
-int my_read(char *tekst, size_t length);
-int buffer_count();
-void buffer_clear(void);
-char* check_data(char* tekst,char* tekst_in, int read, int write);
-void one_read_one_write();
-void few_write_one_read();
-void few_write_few_read();
-void critical_error_test();
+#define MAX_SIZE 30
+
+typedef struct buffer{
+char circ_buf[MAX_SIZE];
+unsigned int recent_buffer_write;
+unsigned int recent_buffer_read;
+}buf;
+
+
+
+int my_write(buf *b,char *tekst, size_t length);
+int my_read(buf *b,char *tekst, size_t length);
+int buffer_count(buf *b);
+void buffer_clear(buf *b);
+
+
 #endif

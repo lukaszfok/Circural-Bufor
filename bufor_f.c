@@ -1,56 +1,53 @@
 #include <string.h>
 #include "bufor.h"
 
-#define MAX_SIZE 30
 
-static char circ_buf[MAX_SIZE];
-static unsigned int recent_buffer_write;
-static unsigned int recent_buffer_read;
 
-int my_write(char *tekst, size_t length){
+int my_write(buf *b,char *tekst, size_t length){
 
 	unsigned int i;
 
 	for(i = 0; i < length; i++ ){
-		if(recent_buffer_write > sizeof(circ_buf)){
-	  		recent_buffer_write=0;
+		if(b->recent_buffer_write > sizeof(b->circ_buf)){
+	  		b->recent_buffer_write=0;
 		}
-		if(recent_buffer_write+1 == recent_buffer_read){
-			recent_buffer_read++;
+		if(b->recent_buffer_write+1 == b->recent_buffer_read){
+			b->recent_buffer_read++;
 		}
-		if(recent_buffer_read>sizeof(circ_buf)){
-			recent_buffer_read=0;
+		if(b->recent_buffer_read>sizeof(b->circ_buf)){
+			b->recent_buffer_read=0;
 		}
-    	circ_buf[recent_buffer_write++] = tekst[i];
+    	b->circ_buf[b->recent_buffer_write++] = tekst[i];
     } 
-	recent_buffer_write=recent_buffer_write % sizeof(circ_buf);
+	b->recent_buffer_write=b->recent_buffer_write % sizeof(b->circ_buf);
 	return i;
 }
 
-int my_read(char *tekst, size_t length){
+int my_read(buf *b,char *tekst, size_t length){
 
 	unsigned int i;
 
-	for(i = 0; i < length && recent_buffer_read!=recent_buffer_write; i++){
-      tekst[i] = circ_buf[recent_buffer_read++]; 
+	for(i = 0; i < length && b->recent_buffer_read!=b->recent_buffer_write; i++){
+      tekst[i] = b->circ_buf[b->recent_buffer_read++]; 
       
-	if(recent_buffer_read >sizeof(circ_buf)){
-			recent_buffer_read=0;
+	if(b->recent_buffer_read >sizeof(b->circ_buf)){
+			b->recent_buffer_read=0;
 		}	
 }
 	return i;
 }
 
-int buffer_count(){
-	if (recent_buffer_read <= recent_buffer_write)
-		return recent_buffer_write - recent_buffer_read;
+int buffer_count(buf *b){
+
+	if (b->recent_buffer_read <= b->recent_buffer_write)
+		return b->recent_buffer_write - b->recent_buffer_read;
 	
-	return sizeof(circ_buf) - recent_buffer_read + recent_buffer_write;
+	return sizeof(b->circ_buf) - b->recent_buffer_read + b->recent_buffer_write;
 }
 
-void buffer_clear(void){
-	
-	recent_buffer_write=recent_buffer_read=0;
+void buffer_clear(buf *b){
+
+	b->recent_buffer_write=b->recent_buffer_read=0;
 }
 
 

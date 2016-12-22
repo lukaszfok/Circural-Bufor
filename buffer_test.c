@@ -3,16 +3,20 @@
 #include <string.h>
 #include "bufor.h"
 
-
+char* check_data(char* tekst,char* tekst_in, int read, int write);
+void one_read_one_write();
+void few_write_one_read();
+void few_write_few_read();
+void critical_error_test();
 
 void one_read_one_write()
 {
 	char tekst[30];
 	int write;
 	int read;
-
-	write = my_write("down", 4);
-	read = my_read(tekst, sizeof(tekst));
+		buf b;
+	write = my_write(&b,"down", 4);
+	read = my_read(&b,tekst, sizeof(tekst));
 	printf("%s\n", check_data(tekst, "down", read, write));
 }
 
@@ -21,10 +25,10 @@ void few_write_one_read()
 	char tekst[30];
 	int write;
 	int read;
-
-	write = my_write("down", 4);
-	write += my_write("load1", 5);
-	read = my_read(tekst, sizeof(tekst));
+	buf b;
+	write = my_write(&b,"down", 4);
+	write += my_write(&b,"load1", 5);
+	read = my_read(&b,tekst, sizeof(tekst));
 	printf("%s\n", check_data(tekst, "download1", read, write));
 }
 
@@ -33,23 +37,25 @@ void few_write_few_read()
 	char tekst[30];
 	int write;
 	int read;
-
-	write = my_write("down", 4);
-	write += my_write("load1", 5);
-	read = my_read(tekst, 3);
-	read += my_read(tekst + read, sizeof(tekst) - read);
+	buf b;
+	write = my_write(&b,"down", 4);
+	write += my_write(&b,"load1", 5);
+	read = my_read(&b,tekst, 3);
+	read += my_read(&b,tekst + read, sizeof(tekst) - read);
 	printf("%s\n", check_data(tekst, "download1", read, write));
 }
 
 void critical_error_test()
 {
+	buf b;
 	char tekst[30];
-	int write = my_write("1234567890123456789012", 22);
-	int read = my_read(tekst, sizeof(tekst));
+	int write = my_write(&b,"1234567890123456789012", 22);
+	int read = my_read(&b,tekst, sizeof(tekst));
+	
 	printf("%s\n", check_data(tekst, "1234567890123456789012", read, write));
 
-	write = my_write("123", 3);
-	read = my_read(tekst, sizeof(tekst));
+	write = my_write(&b,"123", 3);
+	read = my_read(&b,tekst, sizeof(tekst));
 	printf("%s\n", check_data(tekst, "123", read, write));
 }
 
