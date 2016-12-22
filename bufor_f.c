@@ -1,57 +1,65 @@
 #include <string.h>
 #include "bufor.h"
+/*!
+* \brief Buffer logic
+*/
+/*!
+* \brief Buffer write function
+*	Function write data to buffer and moves index to last writes bytes.
+*
+*/
+int my_write(buf *b,char *tekst, size_t length){
 
-#define MAX_SIZE 30
+	unsigned int i;
 
-static char circ_buf[MAX_SIZE];
-static int recent_buffer_write;
-static int recent_buffer_read;
-
-int my_write(char *tekst, size_t length){
-	int i;
 	for(i = 0; i < length; i++ ){
-		if(recent_buffer_write > sizeof(circ_buf)){
-	  		recent_buffer_write=0;
+		if(b->recent_buffer_write > sizeof(b->circ_buf)){
+	  		b->recent_buffer_write=0;
 		}
-		if(recent_buffer_write+1 == recent_buffer_read){
-			recent_buffer_read++;
+		if(b->recent_buffer_write+1 == b->recent_buffer_read){
+			b->recent_buffer_read++;
 		}
-		if(recent_buffer_read>sizeof(circ_buf)){
-			recent_buffer_read=0;
+		if(b->recent_buffer_read>sizeof(b->circ_buf)){
+			b->recent_buffer_read=0;
 		}
-    	circ_buf[recent_buffer_write++] = tekst[i];
+    	b->circ_buf[b->recent_buffer_write++] = tekst[i];
     } 
-	recent_buffer_write=recent_buffer_write % sizeof(circ_buf);
+	b->recent_buffer_write=b->recent_buffer_write % sizeof(b->circ_buf);
 	return i;
 }
+/*!
+* \brief Buffer read functions
+*	Function read bytes with buffer.
+*/
+int my_read(buf *b,char *tekst, size_t length){
 
-int my_read(char *tekst, size_t length){
-	int i;
-	for(i = 0; i < length && recent_buffer_read<recent_buffer_write; i++){
-      tekst[i] = circ_buf[recent_buffer_read++]; 
+	unsigned int i;
+
+	for(i = 0; i < length && b->recent_buffer_read!=b->recent_buffer_write; i++){
+      tekst[i] = b->circ_buf[b->recent_buffer_read++]; 
       
-	if(recent_buffer_read >sizeof(circ_buf)){
-			recent_buffer_read=0;
+	if(b->recent_buffer_read >sizeof(b->circ_buf)){
+			b->recent_buffer_read=0;
 		}	
 }
 	return i;
 }
+/*!
+* \brief Buffer cout
+*  Function save data with buffer for read.
+*/
+int buffer_count(buf *b){
 
-int buffer_count(char *tekst , size_t lenght){
-
-	if(recent_buffer_read<recent_buffer_write){
-
-		return recent_buffer_write-recent_buffer_read;
-
-	}else if(recent_buffer_read>recent_buffer_write){
-
-		return sizeof(circ_buf)-recent_buffer_read+recent_buffer_write;
-
-	}
-}
-
-void buffer_clear(){
+	if (b->recent_buffer_read <= b->recent_buffer_write)
+		return b->recent_buffer_write - b->recent_buffer_read;
 	
-	recent_buffer_write=recent_buffer_read=0;
+	return sizeof(b->circ_buf) - b->recent_buffer_read + b->recent_buffer_write;
 }
+/*!
+* \brief Buffer clear
+*  Function moves index to buffor start.
+*/
+void buffer_clear(buf *b){
 
+	b->recent_buffer_write=b->recent_buffer_read=0;
+}

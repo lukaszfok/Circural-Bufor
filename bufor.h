@@ -1,18 +1,28 @@
-#ifdef BUFOR_H
+#ifndef BUFOR_H
 #define BUFOR_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
-int my_write(char *tekst, size_t length);
-int my_read(char *tekst, size_t length);
-void buffer_clear();
-int buffer_count(char *tekst , size_t lenght);
-int check_state(char* tekst, char* tekst_in, int write, int read);
-
-void one_read_one_write();
-void few_write_one_read();
-void few_write_few_read();
-void critical_error_test();
+/*!
+* \brief All declarations
+*	 File for declaration all function and structure.
+*/
+#define MAX_SIZE 30
+/*!
+* \brief Buffer structure
+*	 Struct store table of buffer and index.
+*/
+typedef struct buffer{
+char circ_buf[MAX_SIZE];
+unsigned int recent_buffer_write;
+unsigned int recent_buffer_read;
+}buf;
+/*!
+* \brief Declaration logic function
+*	 Declaration all logic function for buffer.
+*/
+int my_write(buf *b,char *tekst, size_t length);
+int my_read(buf *b,char *tekst, size_t length);
+int buffer_count(buf *b);
+void buffer_clear(buf *b);
 #endif

@@ -3,13 +3,12 @@
 #include <string.h>
 #include "bufor.h"
 
+
+/*static buf b;*/
+
 int main()
 {  		
-	one_read_one_write();
-	buffer_clear();
-	few_write_one_read();
-	buffer_clear();	
-	few_write_few_read();
 
+	
     return 0;
 }
