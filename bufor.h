@@ -25,4 +25,5 @@ int my_write(buf *b,char *tekst, size_t length);
 int my_read(buf *b,char *tekst, size_t length);
 int buffer_count(buf *b);
 void buffer_clear(buf *b);
+int until_read(buf *b,char *tekst,size_t length,char sign);
 #endif

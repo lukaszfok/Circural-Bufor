@@ -63,3 +63,27 @@ void buffer_clear(buf *b){
 
 	b->recent_buffer_write=b->recent_buffer_read=0;
 }
+/*!
+* \brief Buffer until
+* 
+*/
+int until_read(buf *b,char *tekst,size_t length,char sign){
+		
+	unsigned int i;
+		
+	for(i=b->recent_buffer_read; i < b->recent_buffer_write; i++){
+		if(b->circ_buf[i] == sign){
+		
+		return i = b->circ_buf[b->recent_buffer_read++];
+		}
+	}
+	
+	for(i=b->recent_buffer_read; i < b->recent_buffer_write; i++){
+		if(circ_buf[i] != sign){
+		
+		return i++;
+		}
+	
+	}
+}
+

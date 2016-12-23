@@ -91,3 +91,4 @@ char* check_data(char* tekst, char* tekst_in, int read, int write)
 
 	return "OK";
 }
+
