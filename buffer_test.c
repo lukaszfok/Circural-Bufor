@@ -77,6 +77,7 @@ void critical_error_test()
 * \brief Function check
 *	 Function check correct data.
 */
+
 char* check_data(char* tekst, char* tekst_in, int read, int write)
 {
 	if (write != read) {
