@@ -72,25 +72,27 @@ int until_read(buf *b,char *tekst,size_t length,char sign){
 	unsigned int i;
 	int sign_state = -1;			
 	for(i=b->recent_buffer_read; i != b->recent_buffer_write; i++){ 	
-
-		if(b->circ_buf[i] == sign){
-				sign_state = i;
-		}
 		if(i > sizeof(b->circ_buf)){
 				i = 0;
 		}
+		if(b->circ_buf[i] == sign){
+				sign_state = i;
+		}
+		
 	}
 	if(sign_state == -1){
 		return 0;
 	}
 	
-	for(i=b->recent_buffer_read; i != sign_state; i++){
+	for(i=0; i < length && b->recent_buffer_read != sign_state; i++){
 		tekst[i] = b->circ_buf[b->recent_buffer_read++]; 
 			
 		if(b->recent_buffer_read >sizeof(b->circ_buf)){
 				b->recent_buffer_read=0;
 			}
-	}		
+		
+	}
+	b->recent_buffer_read=+2;		
 	return i;
 }
  

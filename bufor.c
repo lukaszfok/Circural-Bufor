@@ -18,8 +18,8 @@ int main()
 	few_write_one_read();
 	few_write_few_read();
 	critical_error_test();
-
-	read_until(NULL, 100, '\r');
-
+	basic_util_read();
+	
+	
     return 0;
 }

@@ -74,10 +74,38 @@ void critical_error_test()
 	printf("%s\n", check_data(tekst, "123", read, write));
 }
 /*!
+*	\brief Test Until Read
+*
+*/
+void basic_util_read()
+{
+	buf b;
+	char tekst[30];
+	int write = my_write(&b,"1234567890",14);		
+	int read_u = until_read(&b,NULL,30,'\r');
+	printf("%d\n",read_u);
+	
+	buffer_clear(&b);
+	write = my_write(&b,"1234567890\x1B",14);		
+	read_u = until_read(&b,tekst,30,'\x1B');
+	printf("%d %s\n",read_u ,tekst);
+	
+	buffer_clear(&b);
+	write = my_write(&b,"1234567890\x1B",14);		
+	read_u = until_read(&b,tekst,30,'\x1B');
+	printf("%d %s\n",read_u ,tekst);
+	
+	buffer_clear(&b);
+	write = my_write(&b,"1234567\033901234\x1B",22);		
+	read_u = until_read(&b,tekst,30,'\033');
+	printf("%d %s\n",read_u ,tekst);
+	read_u = until_read(&b,tekst,30,'\x1B');
+	printf("%d %s\n",read_u ,tekst);
+}
+/*!
 * \brief Function check
 *	 Function check correct data.
 */
-
 char* check_data(char* tekst, char* tekst_in, int read, int write)
 {
 	if (write != read) {
