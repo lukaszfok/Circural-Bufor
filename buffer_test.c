@@ -12,6 +12,7 @@ void few_write_few_read();
 void critical_error_test();
 void basic_util_read();
 
+
 /*!
 * \brief Function one write one read
 *	 Function check data currect for buffer use one write data and one read data with buffor
@@ -84,8 +85,9 @@ void basic_util_read()
 	int write;
 	int read_u; 
 	char tekst[30];
-	write = my_write(&b,"1234567890",14);		
-	read_u = until_read(&b,NULL,30,'\r');
+	buffer_clear(&b);
+	write = my_write(&b,"1234567890",11);		
+	read_u = until_read(&b,tekst,30,'\r');
 	printf("%d\n",read_u);
 	
 	buffer_clear(&b);
@@ -99,10 +101,10 @@ void basic_util_read()
 	printf("%d %s\n",read_u ,tekst);
 	
 	buffer_clear(&b);
-	write = my_write(&b,"1234567\033901234\x1B",22);		
-	read_u = until_read(&b,tekst,30,'\033');
+	write = my_write(&b,"1234567\r901234\r",16);		
+	read_u = until_read(&b,tekst,30,'\r');
 	printf("%d %s\n",read_u ,tekst);
-	read_u = until_read(&b,tekst,30,'\x1B');
+	read_u = until_read(&b,tekst,30,'\r');
 	printf("%d %s\n",read_u ,tekst);
 }
 /*!

@@ -8,6 +8,7 @@
 *	Function write data to buffer and moves index to last writes bytes.
 *
 */
+
 int my_write(buf *b,char *tekst, size_t length){
 
 	unsigned int i;
@@ -70,28 +71,39 @@ void buffer_clear(buf *b){
 int until_read(buf *b,char *tekst,size_t length,char sign){
 		
 	unsigned int i;
-	int sign_state = -1;				
-	for(i=0; i < length && b->recent_buffer_read != sign_state; i++){
-		tekst[i] = b->circ_buf[b->recent_buffer_read++]; 
+	//printf("a\n");
+	int sign_state = get_sign_index(b,sign);
+	//printf("%d\n ",sign_state);
+	int count = 0;
+	if(sign_state == -1){
+		return 0;
+	}
+					
+	for(i=b->recent_buffer_read; i < length && b->recent_buffer_read != sign_state; i++){
+		tekst[count] = b->circ_buf[b->recent_buffer_read++];
+		count++;
 			
 		if(b->recent_buffer_read >sizeof(b->circ_buf)){
 				b->recent_buffer_read=0;
-			}
+		}
 		
 	}
-	b->recent_buffer_read=+2;		
-	return i;
+	tekst[count] = '\0';
+	b->recent_buffer_read+=1;		
+	return count;
 }
-static int get_sign_index(buf *b, char sign){
-		
+int get_sign_index(buf *b, char sign){
 	unsigned int i;
 	for(i=b->recent_buffer_read; i != b->recent_buffer_write; i++){ 	
-		
+		//printf("%d\n ",i);
 		if(i > sizeof(b->circ_buf)){
 				i = 0;
 		}
-		if(b->circ_buf[i] == sign)
-			i=b->recent_buffer_read;
+		//printf("%d\n ",i);
+		if(b->circ_buf[i] == sign){
+
 			return i;
-	}	
+		}	
+	}
+	return -1;	
 } 

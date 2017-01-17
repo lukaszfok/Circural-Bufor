@@ -26,4 +26,5 @@ int my_read(buf *b,char *tekst, size_t length);
 int buffer_count(buf *b);
 void buffer_clear(buf *b);
 int until_read(buf *b,char *tekst,size_t length,char sign);
+int get_sign_index(buf *b, char sign);
 #endif
