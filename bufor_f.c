@@ -70,20 +70,7 @@ void buffer_clear(buf *b){
 int until_read(buf *b,char *tekst,size_t length,char sign){
 		
 	unsigned int i;
-	int sign_state = -1;			
-	for(i=b->recent_buffer_read; i != b->recent_buffer_write; i++){ 	
-		if(i > sizeof(b->circ_buf)){
-				i = 0;
-		}
-		if(b->circ_buf[i] == sign){
-				sign_state = i;
-		}
-		
-	}
-	if(sign_state == -1){
-		return 0;
-	}
-	
+	int sign_state = -1;				
 	for(i=0; i < length && b->recent_buffer_read != sign_state; i++){
 		tekst[i] = b->circ_buf[b->recent_buffer_read++]; 
 			
@@ -95,4 +82,16 @@ int until_read(buf *b,char *tekst,size_t length,char sign){
 	b->recent_buffer_read=+2;		
 	return i;
 }
- 
+static int get_sign_index(buf *b, char sign){
+		
+	unsigned int i;
+	for(i=b->recent_buffer_read; i != b->recent_buffer_write; i++){ 	
+		
+		if(i > sizeof(b->circ_buf)){
+				i = 0;
+		}
+		if(b->circ_buf[i] == sign)
+			i=b->recent_buffer_read;
+			return i;
+	}	
+} 

@@ -10,6 +10,7 @@ void one_read_one_write();
 void few_write_one_read();
 void few_write_few_read();
 void critical_error_test();
+void basic_util_read();
 
 /*!
 * \brief Function one write one read
@@ -80,9 +81,11 @@ void critical_error_test()
 void basic_util_read()
 {
 	buf b;
+	int write;
+	int read_u; 
 	char tekst[30];
-	int write = my_write(&b,"1234567890",14);		
-	int read_u = until_read(&b,NULL,30,'\r');
+	write = my_write(&b,"1234567890",14);		
+	read_u = until_read(&b,NULL,30,'\r');
 	printf("%d\n",read_u);
 	
 	buffer_clear(&b);
