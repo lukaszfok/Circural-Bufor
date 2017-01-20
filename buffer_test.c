@@ -22,7 +22,7 @@ void one_read_one_write()
 	char tekst[30];
 	int write;
 	int read;
-		buf b;
+	buf b;
 	write = my_write(&b,"down", 4);
 	read = my_read(&b,tekst, sizeof(tekst));
 	printf("%s\n", check_data(tekst, "down", read, write));

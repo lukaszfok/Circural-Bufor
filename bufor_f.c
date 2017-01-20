@@ -1,5 +1,57 @@
 #include <string.h>
 #include "bufor.h"
+
+void circbuf_init(buf * b, char *tekst, int len)
+{	
+	b->len = len;	
+	b->recent_buffer_write = 0;
+	b->recent_buffer_read = 0;
+	b->recent_buffer_overlap = 0;
+}
+void w_byte(buf * b, char byte)
+{
+	if(b->recent_buffer_overlap == 1){
+		b->recent_buffer_read++;
+		if(b->recent_buffer_read == b->len){
+			b->recent_buffer_read = 0;
+		}
+		b->recent_buffer_overlap = 0;			
+	}
+	
+	
+	b->circ_buf[b->recent_buffer_write++] = byte;
+	
+	if(b->recent_buffer_write >= b->len){
+		b->recent_buffer_write = 0;
+	}
+	
+	if(b->recent_buffer_write == b->recent_buffer_read){
+		b->recent_buffer_overlap = 1;
+		//buf->r++;
+		//if(buf->r == buf->len){
+		//	buf->r = 0;
+		//}			
+	}	
+	//printf("W%d R%d\n",buf->w,buf->r );	
+}
+
+int r_byte(buf * b, char *byte)
+{
+	if(b->recent_buffer_overlap){
+		b->recent_buffer_overlap = 0;	
+	}else{
+	
+		if(b->recent_buffer_write == b->recent_buffer_read){
+			return 0;
+		}
+	}
+	*byte = b->circ_buf[b->recent_buffer_read++];
+	if(b->recent_buffer_read == b->len){
+		b->recent_buffer_read = 0;
+	}
+	return 1;	
+}
+
 /*!
 * \brief Buffer logic
 */
@@ -14,16 +66,21 @@ int my_write(buf *b,char *tekst, size_t length){
 	unsigned int i;
 
 	for(i = 0; i < length; i++ ){
-		if(b->recent_buffer_write > sizeof(b->circ_buf)){
-	  		b->recent_buffer_write=0;
-		}
-		if(b->recent_buffer_write+1 == b->recent_buffer_read){
+		b->circ_buf[b->recent_buffer_write] = tekst[i];
+		if(b->recent_buffer_write == b->recent_buffer_read && b->recent_buffer_overlap){
 			b->recent_buffer_read++;
+
 		}
-		if(b->recent_buffer_read>sizeof(b->circ_buf)){
+		if(b->recent_buffer_read>=sizeof(b->circ_buf)){
 			b->recent_buffer_read=0;
 		}
-    	b->circ_buf[b->recent_buffer_write++] = tekst[i];
+		b->recent_buffer_write++;
+		if(b->recent_buffer_write >= sizeof(b->circ_buf)){
+	  		b->recent_buffer_write=0;
+	  		b->recent_buffer_overlap =1;
+		}
+		
+    	
     } 
 	b->recent_buffer_write=b->recent_buffer_write % sizeof(b->circ_buf);
 	return i;
@@ -36,12 +93,15 @@ int my_read(buf *b,char *tekst, size_t length){
 
 	unsigned int i;
 
-	for(i = 0; i < length && b->recent_buffer_read!=b->recent_buffer_write; i++){
-      tekst[i] = b->circ_buf[b->recent_buffer_read++]; 
-      
-	if(b->recent_buffer_read >sizeof(b->circ_buf)){
+	for(i = 0; i < length && (b->recent_buffer_read!=b->recent_buffer_write || b->recent_buffer_overlap); i++){		
+      tekst[i] = b->circ_buf[b->recent_buffer_read]; 
+      b->recent_buffer_read++;
+      	
+	if(b->recent_buffer_read >=sizeof(b->circ_buf)){
 			b->recent_buffer_read=0;
+			b->recent_buffer_overlap =0;
 		}	
+			
 }
 	return i;
 }
